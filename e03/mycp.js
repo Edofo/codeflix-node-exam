@@ -30,24 +30,41 @@ else if(args.length == 3) {
     if(args[0] == '-r') {
         if(fs.existsSync(args[1])) {
 
-            let path = fs.realpathSync(args[1]);
+            var mkdir = function(dir) {
+                try {
+                    fs.mkdirSync(dir, 0755);
+                } catch(e) {
+                    if(e.code != "EEXIST") {
+                        throw e;
+                    }
+                }
+            };
 
-            fs.writeFileSync(args[2], path, (err) => {
-                if (err) throw err;
-                console.log(`le chemin d'accès du dossier : ${args[1]} a été copié dans ${args[2]}`);
-            });
+            mkdir(args[2]);
+            let files = fs.readdirSync(args[1]);
 
+            for(var i = 0; i < files.length; i++) {
+                var current = fs.lstatSync(path.join(src, files[i]));
+                if(current.isDirectory()) {
+                    copyDir(path.join(src, files[i]), path.join(dest, files[i]));
+                } else if(current.isSymbolicLink()) {
+                    var symlink = fs.readlinkSync(path.join(src, files[i]));
+                    fs.symlinkSync(symlink, path.join(dest, files[i]));
+                } else {
+                    copy(path.join(src, files[i]), path.join(dest, files[i]));
+                }
+            }
 
         } else {
 
-            console.log(`Le fichier : ${args[1]} n\'existe pas`);
+            console.log(`Le dossier : ${args[1]} n\'existe pas`);
         }
     } else {
 
-        console.log('Commande Inconnue');
+        console.log('Commande inconnue');
     }
 } 
 
 else {
-    console.log('Commane Inconnue')
+    console.log('Commane inconnue')
 }
