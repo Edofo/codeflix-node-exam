@@ -1,6 +1,7 @@
 let args = process.argv.splice(2,process.argv.length-1);
 let readline = require('readline');
-let fs = require('fs');
+let fs = require('fs'); 
+
 
 if(args.length == 0) {
     let rl = readline.createInterface({
@@ -14,30 +15,32 @@ if(args.length == 0) {
     });
 }
 
-if(args.length == 1) {
+else if(args.length == 1) {
     let rl = readline.createInterface({
         input: fs.createReadStream(args[0], 'utf8'),
     });
 
     rl.on('line', function(line) {
         console.log(line);
-        rl.close();
     });
 }
 
-if(args.length == 2) {
-
-    let rl = readline.createInterface({
-        input: fs.createReadStream(args[1], 'utf8'),
-    });
-    
-    rl.on('line', function(line) {
-        console.log(line + '$');
-        rl.close();
-    });
+else if(args.length == 2) {
+    if(args[0] == '-e') {
+        let rl = readline.createInterface({
+            input: fs.createReadStream(args[1], 'utf8'),
+        });
+        
+        rl.on('line', function(line) {
+            console.log(line + '$');
+        });
+    } 
+    else {
+        console.log('Commande Inconnue');
+    }
 }
 
-if(args.length >= 3) {
+else {
     console.log('Commande Inconnue');
 }
 
