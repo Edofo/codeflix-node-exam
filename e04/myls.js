@@ -42,14 +42,23 @@ else if(args.length == 1) {
 
 else if(args.length == 2) {
   if(args[0] == '-R') {
+
     fs.readdir(args[1], (err, files) => { 
         if (err) 
           console.log(err); 
         else { 
-          files.forEach(file => { 
-            console.log(file); 
-          }) 
-        } 
-    }) 
-  }
-}
+          for (var i = 0; i < files.length; i++) {
+            var file = args[1] + '/' + files[i];
+              console.log(file);
+              
+
+              if(fs.statSync(file).isDirectory() == true) {
+                console.log('test');
+              }
+          }
+        }
+    })
+    
+  };
+};
+
